@@ -1,7 +1,9 @@
 public interface HealthPoint {
-    int getHP();
+    public int getHP();
 
-    void setHP(int healthPoint);
+    public void setHP(int healthPoint);
 
-    boolean isAlive();
+    public boolean isAlive();
+
+    public boolean hasCollision(int x, int y);
 }

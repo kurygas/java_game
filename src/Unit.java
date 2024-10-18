@@ -17,4 +17,17 @@ public abstract class Unit implements Moving, Drawing {
         this.image = image;
         this.direction = new Direction();
     }
+
+    public void draw(Graphics g) {
+
+    }
+
+    protected void rotate(Graphics g, double angle) {
+        var graphics2D = (Graphics2D) g;
+        var xCenter = this.x + (double) this.image.getWidth(null) / 2;
+        var yCenter = this.y + (double) this.image.getHeight(null) / 2;
+        graphics2D.rotate(angle, xCenter, yCenter);
+        graphics2D.drawImage(this.image, this.x, this.y, null);
+        graphics2D.rotate(-angle, xCenter, yCenter);
+    }
 }

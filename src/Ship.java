@@ -1,18 +1,29 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Ship extends Unit implements HealthPoint {
     private final Weapon weapon;
     private int currentHp;
     private final int maxHp;
     private final Color color;
+    private final ArrayList<HealthPoint> enemies = new ArrayList<>();
 
     public Ship(int x, int y, int speed, double angle, Image image, Weapon weapon, int hp, Color color) {
         super(x, y, speed, angle, image);
         this.weapon = weapon;
-        this.currentHp = hp - 1;
+        this.currentHp = hp;
         this.maxHp = hp;
         this.color = color;
+    }
+
+    public void addEnemy(HealthPoint enemy) {
+        enemies.addLast(enemy);
+    }
+
+    public void shoot() {
+        int imageSize = this.image.getWidth(null) / 2;
+        this.weapon.shoot(this.x + imageSize, this.y + imageSize, this.angle);
     }
 
     @Override
@@ -35,19 +46,18 @@ public class Ship extends Unit implements HealthPoint {
             this.angle += 0.1;
         }
 
+        if (this.weapon != null) {
+            this.weapon.moveBullets(this.enemies);
+        }
     }
 
     @Override
     public void draw(Graphics g) {
-        Graphics2D graphics2D = (Graphics2D) g;
-        var xCenter = this.x + (double) this.image.getWidth(null) / 2;
-        var yCenter = this.y + (double) this.image.getHeight(null) / 2;
-        graphics2D.rotate(this.angle, xCenter, yCenter);
-        graphics2D.drawImage(this.image, this.x, this.y, null);
-        graphics2D.rotate(-this.angle, xCenter, yCenter);
-        graphics2D.setColor(this.color);
-        graphics2D.drawRect(this.x, this.y - 20, this.image.getWidth(null), 10);
-        graphics2D.fillRect(this.x, this.y - 20, this.image.getWidth(null) * this.currentHp / this.maxHp, 10);
+        rotate(g, angle);
+        g.setColor(this.color);
+        g.drawRect(this.x, this.y - 20, this.image.getWidth(null), 10);
+        g.fillRect(this.x, this.y - 20, this.image.getWidth(null) * this.currentHp / this.maxHp, 10);
+        this.weapon.drawBullets(g);
     }
 
     @Override
@@ -63,5 +73,11 @@ public class Ship extends Unit implements HealthPoint {
     @Override
     public boolean isAlive() {
         return this.currentHp > 0;
+    }
+
+    @Override
+    public boolean hasCollision(int x, int y) {
+        var rad = (double) this.image.getWidth(null) / 2;
+        return Math.pow(x - rad - this.x, 2) + Math.pow(y - rad - this.y, 2) <= Math.pow(rad, 2);
     }
 }

@@ -7,12 +7,10 @@ import java.awt.event.KeyListener;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private final Ship player1;
     private final Ship player2;
-    private ArrayList<Unit> bullets;
 
     public GamePanel() {
         addKeyListener(this);
@@ -20,11 +18,16 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         timer.start();
 
         try {
-            var image = ImageIO.read(new File("src/orc.png")).getScaledInstance(100, 100, Image.SCALE_DEFAULT);
+            var shipImage = ImageIO.read(new File("src/ship.png")).getScaledInstance(100, 100, Image.SCALE_DEFAULT);
+            var bulletImage = ImageIO.read(new File("src/bullet.png")).getScaledInstance(50, 50, Image.SCALE_DEFAULT);
             var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            var yPos = screenSize.height / 2 - image.getHeight(null) / 2;
-            this.player1 = new Ship(25, yPos, 10, Math.PI / 2, image, null, 10, Color.GREEN);
-            this.player2 = new Ship( screenSize.width - 125, yPos, 10, -Math.PI / 2, image, null, 10, Color.RED);
+            var yPos = screenSize.height / 2 - shipImage.getHeight(null) / 2;
+            var weapon1 = new Weapon(1, 20, 1000, bulletImage);
+            var weapon2 = new Weapon(1, 20, 1000, bulletImage);
+            this.player1 = new Ship(25, yPos, 10, Math.PI / 2, shipImage, weapon1, 10, Color.GREEN);
+            this.player2 = new Ship( screenSize.width - 125, yPos, 10, -Math.PI / 2, shipImage, weapon2, 10, Color.RED);
+            this.player1.addEnemy(this.player2);
+            this.player2.addEnemy(this.player1);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -51,10 +54,13 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             case KeyEvent.VK_S -> this.player1.direction.down = true;
             case KeyEvent.VK_D -> this.player1.direction.right = true;
             case KeyEvent.VK_A -> this.player1.direction.left = true;
+            case KeyEvent.VK_SHIFT -> this.player1.shoot();
+
             case KeyEvent.VK_UP -> this.player2.direction.up = true;
             case KeyEvent.VK_DOWN -> this.player2.direction.down = true;
             case KeyEvent.VK_RIGHT -> this.player2.direction.right = true;
             case KeyEvent.VK_LEFT -> this.player2.direction.left = true;
+            case KeyEvent.VK_SPACE -> this.player2.shoot();
         }
     }
 
@@ -74,8 +80,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.player1.move();
-        this.player2.move();
+        if (this.player1 != null) {
+            this.player1.move();
+        }
+        if (this.player2 != null) {
+            this.player2.move();
+        }
         repaint();
     }
 }
