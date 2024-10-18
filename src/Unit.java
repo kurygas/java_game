@@ -2,14 +2,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class Unit implements Moving, Drawing {
-    public int x = 0;
-    public int y = 0;
-    public int speed = 0;
-    public double angle = 0;
-    public BufferedImage image;
-    public Direction direction;
+    protected int x = 0;
+    protected int y = 0;
+    protected int speed = 0;
+    protected double angle = 0;
+    protected Image image;
+    protected Direction direction;
 
-    public Unit(int x, int y, int speed, double angle, BufferedImage image) {
+    public Unit(int x, int y, int speed, double angle, Image image) {
         this.x = x;
         this.y = y;
         this.speed = speed;

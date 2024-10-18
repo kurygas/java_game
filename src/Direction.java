@@ -1,6 +1,6 @@
 public class Direction {
-    boolean up = false;
-    boolean down = false;
-    boolean right = false;
-    boolean left = false;
+    public boolean up = false;
+    public boolean down = false;
+    public boolean right = false;
+    public boolean left = false;
 }

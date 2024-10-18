@@ -2,13 +2,17 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Ship extends Unit implements HealthPoint {
-    public Weapon weapon;
-    public int hp = 1;
+    private final Weapon weapon;
+    private int currentHp;
+    private final int maxHp;
+    private final Color color;
 
-    public Ship(int x, int y, int speed, double angle, BufferedImage image, Weapon weapon, int hp) {
+    public Ship(int x, int y, int speed, double angle, Image image, Weapon weapon, int hp, Color color) {
         super(x, y, speed, angle, image);
         this.weapon = weapon;
-        this.hp = hp;
+        this.currentHp = hp - 1;
+        this.maxHp = hp;
+        this.color = color;
     }
 
     @Override
@@ -17,18 +21,18 @@ public class Ship extends Unit implements HealthPoint {
         var dy = (int) (Math.cos(this.angle) * this.speed);
 
         if (this.direction.up) {
-            x += dx;
-            y -= dy;
+            this.x += dx;
+            this.y -= dy;
         }
         if (this.direction.down) {
-            x -= dx;
-            y += dy;
+            this.x -= dx;
+            this.y += dy;
         }
         if (this.direction.left) {
-            angle -= 0.1;
+            this.angle -= 0.1;
         }
         if (this.direction.right) {
-            angle += 0.1;
+            this.angle += 0.1;
         }
 
     }
@@ -36,25 +40,28 @@ public class Ship extends Unit implements HealthPoint {
     @Override
     public void draw(Graphics g) {
         Graphics2D graphics2D = (Graphics2D) g;
-        var xCenter = x + (double) image.getWidth(null) / 2;
-        var yCenter = y + (double) image.getHeight(null) / 2;
-        graphics2D.rotate(angle, xCenter, yCenter);
-        g.drawImage(image, x, y, null);
-        graphics2D.rotate(-angle, xCenter, yCenter);
+        var xCenter = this.x + (double) this.image.getWidth(null) / 2;
+        var yCenter = this.y + (double) this.image.getHeight(null) / 2;
+        graphics2D.rotate(this.angle, xCenter, yCenter);
+        graphics2D.drawImage(this.image, this.x, this.y, null);
+        graphics2D.rotate(-this.angle, xCenter, yCenter);
+        graphics2D.setColor(this.color);
+        graphics2D.drawRect(this.x, this.y - 20, this.image.getWidth(null), 10);
+        graphics2D.fillRect(this.x, this.y - 20, this.image.getWidth(null) * this.currentHp / this.maxHp, 10);
     }
 
     @Override
     public int getHP() {
-        return this.hp;
+        return this.currentHp;
     }
 
     @Override
     public void setHP(int healthPoint) {
-        this.hp = healthPoint;
+        this.currentHp = healthPoint;
     }
 
     @Override
     public boolean isAlive() {
-        return this.hp > 0;
+        return this.currentHp > 0;
     }
 }
