@@ -11,6 +11,8 @@ import java.io.IOException;
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private final Ship player1;
     private final Ship player2;
+    private final Image spaceImage;
+    private Ship winner;
 
     public GamePanel() {
         addKeyListener(this);
@@ -18,14 +20,20 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         timer.start();
 
         try {
-            var shipImage = ImageIO.read(new File("src/ship.png")).getScaledInstance(100, 100, Image.SCALE_DEFAULT);
-            var bulletImage = ImageIO.read(new File("src/bullet.png")).getScaledInstance(50, 50, Image.SCALE_DEFAULT);
             var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            this.spaceImage = ImageIO.read(new File("src/space.png")).getScaledInstance(screenSize.width,
+                    screenSize.height, Image.SCALE_DEFAULT);
+            var shipImage = ImageIO.read(new File("src/ship.png")).getScaledInstance(100, 100,
+                    Image.SCALE_DEFAULT);
+            var bulletImage = ImageIO.read(new File("src/bullet.png")).getScaledInstance(50, 50,
+                    Image.SCALE_DEFAULT);
             var yPos = screenSize.height / 2 - shipImage.getHeight(null) / 2;
             var weapon1 = new Weapon(1, 20, 1000, bulletImage);
             var weapon2 = new Weapon(1, 20, 1000, bulletImage);
-            this.player1 = new Ship(25, yPos, 10, Math.PI / 2, shipImage, weapon1, 10, Color.GREEN);
-            this.player2 = new Ship( screenSize.width - 125, yPos, 10, -Math.PI / 2, shipImage, weapon2, 10, Color.RED);
+            this.player1 = new Ship(25, yPos, 10, Math.PI / 2, shipImage, weapon1, 10, Color.BLUE,
+                    "Player 1");
+            this.player2 = new Ship( screenSize.width - 125, yPos, 10, -Math.PI / 2, shipImage, weapon2,
+                    10, Color.RED, "Player 2");
             this.player1.addEnemy(this.player2);
             this.player2.addEnemy(this.player1);
         } catch (IOException e) {
@@ -38,8 +46,20 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        this.player1.draw(g);
-        this.player2.draw(g);
+        g.drawImage(this.spaceImage, 0, 0, null);
+
+        if (this.winner != null) {
+            g.setFont(new Font("Arial", Font.BOLD, 60));
+            g.setColor(Color.WHITE);
+            var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            var label = this.winner.getName().concat(" wins!");
+            g.drawString(label, screenSize.width / 2 - label.length() * 15,
+                    screenSize.height / 2 - 30);
+        }
+        else {
+            this.player1.draw(g);
+            this.player2.draw(g);
+        }
     }
 
     @Override
@@ -80,12 +100,19 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (this.player1 != null) {
+        if (this.winner == null && this.player1 != null && this.player2 != null) {
             this.player1.move();
-        }
-        if (this.player2 != null) {
             this.player2.move();
+
+            if (this.player1.getHP() <= 0) {
+                this.winner = this.player2;
+            }
+
+            if (this.player2.getHP() <= 0) {
+                this.winner = this.player1;
+            }
         }
+
         repaint();
     }
 }

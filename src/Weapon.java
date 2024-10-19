@@ -25,7 +25,8 @@ public class Weapon implements ActionListener {
         }
         this.timer.start();
         int bulletSize = this.image.getWidth(null) / 2;
-        bullets.addLast(new Bullet(x - bulletSize, y - bulletSize, this.bulletSpeed, angle, this.image, this.bulletDamage));
+        bullets.addLast(new Bullet(x - bulletSize, y - bulletSize, this.bulletSpeed, angle, this.image,
+                this.bulletDamage));
     }
 
     @Override
