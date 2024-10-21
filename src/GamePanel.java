@@ -7,19 +7,14 @@ import java.awt.event.KeyListener;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private final Ship player1;
     private final Ship player2;
     private final Image spaceImage;
     private Ship winner;
-    private final GameFrame gameFrame;
-    private final Image bulletImage;
 
-    public GamePanel(GameFrame gameFrame) {
-        this.gameFrame = gameFrame;
-
+    public GamePanel() {
         addKeyListener(this);
         var timer = new Timer(50, this);
         timer.start();
@@ -29,8 +24,6 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             this.spaceImage = ImageIO.read(new File("src/space.png")).getScaledInstance(screenSize.width,
                     screenSize.height, Image.SCALE_DEFAULT);
             var shipImage = ImageIO.read(new File("src/ship.png")).getScaledInstance(100, 100,
-                    Image.SCALE_DEFAULT);
-            this.bulletImage = ImageIO.read(new File("src/bullet.png")).getScaledInstance(50, 50,
                     Image.SCALE_DEFAULT);
             var yPos = screenSize.height / 2 - shipImage.getHeight(null) / 2;
             this.player1 = new Ship(25, yPos, 10, Math.PI / 2, shipImage, null, 18, Color.BLUE,
@@ -47,24 +40,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         setFocusable(true);
     }
 
-    Weapon getWeaponFromName(String name) throws IOException {
-        Weapon res = null;
-        if (Objects.equals(name, "Пулемет")) {
-            res = new Weapon(2, 60, 300, bulletImage);
-        } else if (Objects.equals(name, "Автомат")) {
-            res = new Weapon(4, 40, 600, bulletImage);
-        } else if (Objects.equals(name, "Снайперка")) {
-            res = new Weapon(6, 100, 1800, bulletImage);
-        }
-        return res;
+    void setPlayer1Weapon(Weapon weapon) {
+        this.player1.setWeapon(weapon);
     }
 
-    void setPlayer1Weapon(String name) throws IOException {
-        this.player1.setWeapon(getWeaponFromName(name));
-    }
-
-    void setPlayer2Weapon(String name) throws IOException {
-        this.player2.setWeapon(getWeaponFromName(name));
+    void setPlayer2Weapon(Weapon weapon) throws IOException {
+        this.player2.setWeapon(weapon);
     }
 
     @Override

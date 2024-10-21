@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class GameFrame extends JFrame {
@@ -10,39 +8,36 @@ public class GameFrame extends JFrame {
     private final CardLayout cardLayout;
     private final JPanel cardPanel;
 
-    public GameFrame() throws HeadlessException {
+    public GameFrame() throws HeadlessException, IOException {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        cardLayout = new CardLayout();
-        cardPanel = new JPanel(cardLayout);
+        this.cardLayout = new CardLayout();
+        this.cardPanel = new JPanel(cardLayout);
 
-        game = new GamePanel(this);
-        menu = new MenuPanel();
+        this.game = new GamePanel();
+        this.menu = new MenuPanel();
 
-        cardPanel.add(menu, "MenuPanel");
-        cardPanel.add(game, "GamePanel");
+        this.cardPanel.add(menu, "MenuPanel");
+        this.cardPanel.add(game, "GamePanel");
 
-        add(cardPanel);
+        add(this.cardPanel);
 
-        menu.getButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Переключение на игровой экран");
-                System.out.println(menu.getPlayer1Weapon());
-                System.out.println(menu.getPlayer2Weapon());
-
-                try {
-                    game.setPlayer1Weapon(menu.getPlayer1Weapon());
-                    game.setPlayer2Weapon(menu.getPlayer2Weapon());
-
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-                cardLayout.show(cardPanel, "GamePanel");
-                game.requestFocusInWindow();
+        this.menu.getStartButton().addActionListener(_ -> {
+            try {
+                this.game.setPlayer1Weapon(this.menu.getPlayer1Weapon());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+
+            try {
+                this.game.setPlayer2Weapon(this.menu.getPlayer2Weapon());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            cardLayout.show(cardPanel, "GamePanel");
+            game.requestFocusInWindow();
         });
 
         setVisible(true);

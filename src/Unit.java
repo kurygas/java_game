@@ -18,9 +18,7 @@ public abstract class Unit implements Moving, Drawing {
         this.direction = new Direction();
     }
 
-    public void draw(Graphics g) {
-
-    }
+    public abstract void draw(Graphics g);
 
     protected void rotate(Graphics g, double angle) {
         var graphics2D = (Graphics2D) g;
