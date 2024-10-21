@@ -1,9 +1,8 @@
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Ship extends Unit implements HealthPoint {
-    private final Weapon weapon;
+    private Weapon weapon;
     private int currentHp;
     private final int maxHp;
     private final Color color;
@@ -20,7 +19,11 @@ public class Ship extends Unit implements HealthPoint {
     }
 
     public void addEnemy(HealthPoint enemy) {
-        enemies.addLast(enemy);
+        enemies.add(enemy);
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
     }
 
     public void shoot() {

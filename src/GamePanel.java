@@ -7,14 +7,18 @@ import java.awt.event.KeyListener;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
-    private final Ship player1;
-    private final Ship player2;
-    private final Image spaceImage;
+    private Ship player1;
+    private Ship player2;
+    private Image spaceImage;
     private Ship winner;
+    private final GameFrame gameFrame;
 
-    public GamePanel() {
+    public GamePanel(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
+
         addKeyListener(this);
         var timer = new Timer(50, this);
         timer.start();
@@ -30,17 +34,39 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             var yPos = screenSize.height / 2 - shipImage.getHeight(null) / 2;
             var weapon1 = new Weapon(1, 20, 1000, bulletImage);
             var weapon2 = new Weapon(1, 20, 1000, bulletImage);
-            this.player1 = new Ship(25, yPos, 10, Math.PI / 2, shipImage, weapon1, 10, Color.BLUE,
+            this.player1 = new Ship(25, yPos, 10, Math.PI / 2, shipImage, weapon1, 18, Color.BLUE,
                     "Player 1");
             this.player2 = new Ship( screenSize.width - 125, yPos, 10, -Math.PI / 2, shipImage, weapon2,
-                    10, Color.RED, "Player 2");
+                    18, Color.RED, "Player 2");
             this.player1.addEnemy(this.player2);
             this.player2.addEnemy(this.player1);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         setFocusable(true);
+    }
+
+    Weapon getWeaponFromName(String name) throws IOException {
+        var bulletImage = ImageIO.read(new File("src/bullet.png")).getScaledInstance(50, 50, Image.SCALE_DEFAULT);
+        Weapon res = null;
+        if (Objects.equals(name, "Пулемет")) {
+            res = new Weapon(2, 60, 300, bulletImage);
+        } else if (Objects.equals(name, "Автомат")) {
+            res = new Weapon(4, 40, 600, bulletImage);
+        } else if (Objects.equals(name, "Снайперка")) {
+            res = new Weapon(6, 100, 1800, bulletImage);
+        }
+        return res;
+    }
+
+    void setPlayer1Weapon(String name) throws IOException {
+        this.player1.setWeapon(getWeaponFromName(name));
+    }
+
+    void setPlayer2Weapon(String name) throws IOException {
+        this.player2.setWeapon(getWeaponFromName(name));
     }
 
     @Override
