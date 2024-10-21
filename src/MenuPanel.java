@@ -83,7 +83,7 @@ public class MenuPanel extends JPanel {
                 "Средняя перезарядка, средний урон",
                 "Медленная перезарядка, большой урон"
         };
-        String[] weaponImages = {"src/machine_gun.png", "src/ak47.png", "src/awp.png"};
+        //String[] weaponImages = {"src/machine_gun.png", "src/ak47.png", "src/awp.png"};
 
         for (int i = 0; i < weaponNames.length; i++) {
             JPanel weaponPanel = new JPanel(new BorderLayout());
@@ -98,14 +98,14 @@ public class MenuPanel extends JPanel {
             if (!isAutoWidth) {
                 screenWidth = 350;
             }
-            try {
-                BufferedImage originalImage = ImageIO.read(new File(weaponImages[i]));
-                Image scaledImage = originalImage.getScaledInstance(screenWidth, 150, Image.SCALE_SMOOTH);
-                weaponImage.setIcon(new ImageIcon(scaledImage));
-            } catch (IOException e) {
-                e.printStackTrace();
-                weaponImage.setText("Image not found");
-            }
+//            try {
+//                BufferedImage originalImage = ImageIO.read(new File(weaponImages[i]));
+//                Image scaledImage = originalImage.getScaledInstance(screenWidth, 150, Image.SCALE_SMOOTH);
+//                weaponImage.setIcon(new ImageIcon(scaledImage));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                weaponImage.setText("Image not found");
+//            }
 
             weaponImage.setHorizontalAlignment(SwingConstants.CENTER);
             weaponImage.setPreferredSize(new Dimension(screenWidth, 150));
@@ -120,7 +120,7 @@ public class MenuPanel extends JPanel {
 
             // Добавляем слушатель к радиокнопке и изображению
             int finalI = i;
-            ActionListener selectWeapon = e -> {
+            ActionListener selectWeapon = _ -> {
                 weaponOption.setSelected(true);
                 if (isPlayer1) {
                     player1Weapon = weaponNames[finalI];

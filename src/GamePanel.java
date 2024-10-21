@@ -10,11 +10,12 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
-    private Ship player1;
-    private Ship player2;
-    private Image spaceImage;
+    private final Ship player1;
+    private final Ship player2;
+    private final Image spaceImage;
     private Ship winner;
     private final GameFrame gameFrame;
+    private final Image bulletImage;
 
     public GamePanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
@@ -29,14 +30,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
                     screenSize.height, Image.SCALE_DEFAULT);
             var shipImage = ImageIO.read(new File("src/ship.png")).getScaledInstance(100, 100,
                     Image.SCALE_DEFAULT);
-            var bulletImage = ImageIO.read(new File("src/bullet.png")).getScaledInstance(50, 50,
+            this.bulletImage = ImageIO.read(new File("src/bullet.png")).getScaledInstance(50, 50,
                     Image.SCALE_DEFAULT);
             var yPos = screenSize.height / 2 - shipImage.getHeight(null) / 2;
-            var weapon1 = new Weapon(1, 20, 1000, bulletImage);
-            var weapon2 = new Weapon(1, 20, 1000, bulletImage);
-            this.player1 = new Ship(25, yPos, 10, Math.PI / 2, shipImage, weapon1, 18, Color.BLUE,
+            this.player1 = new Ship(25, yPos, 10, Math.PI / 2, shipImage, null, 18, Color.BLUE,
                     "Player 1");
-            this.player2 = new Ship( screenSize.width - 125, yPos, 10, -Math.PI / 2, shipImage, weapon2,
+            this.player2 = new Ship( screenSize.width - 125, yPos, 10, -Math.PI / 2, shipImage, null,
                     18, Color.RED, "Player 2");
             this.player1.addEnemy(this.player2);
             this.player2.addEnemy(this.player1);
@@ -49,7 +48,6 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     }
 
     Weapon getWeaponFromName(String name) throws IOException {
-        var bulletImage = ImageIO.read(new File("src/bullet.png")).getScaledInstance(50, 50, Image.SCALE_DEFAULT);
         Weapon res = null;
         if (Objects.equals(name, "Пулемет")) {
             res = new Weapon(2, 60, 300, bulletImage);

@@ -5,10 +5,10 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class GameFrame extends JFrame {
-    private GamePanel game;
-    private MenuPanel menu;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
+    private final GamePanel game;
+    private final MenuPanel menu;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
 
     public GameFrame() throws HeadlessException {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
