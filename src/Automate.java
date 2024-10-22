@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.io.IOException;
 
 public class Automate extends Weapon {
@@ -14,10 +13,5 @@ public class Automate extends Weapon {
     @Override
     public String getDescription() {
         return "Средний урон, средняя перезарядка";
-    }
-
-    @Override
-    public WeaponType getEnum() {
-        return WeaponType.Automate;
     }
 }

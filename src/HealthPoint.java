@@ -3,7 +3,7 @@ public interface HealthPoint {
 
     public void setHP(int healthPoint);
 
-    public boolean isAlive();
+    public boolean isDead();
 
     public boolean hasCollision(int x, int y);
 }

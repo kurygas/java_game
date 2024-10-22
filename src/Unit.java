@@ -1,11 +1,10 @@
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
-public abstract class Unit implements Moving, Drawing {
-    protected int x = 0;
-    protected int y = 0;
-    protected int speed = 0;
-    protected double angle = 0;
+public abstract class Unit {
+    protected int x;
+    protected int y;
+    protected int speed;
+    protected double angle;
     protected Image image;
     protected Direction direction;
 
@@ -19,6 +18,7 @@ public abstract class Unit implements Moving, Drawing {
     }
 
     public abstract void draw(Graphics g);
+    public abstract void move();
 
     protected void rotate(Graphics g, double angle) {
         var graphics2D = (Graphics2D) g;

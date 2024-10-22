@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.io.IOException;
 
 public class SniperRiffle extends Weapon {
@@ -14,10 +13,5 @@ public class SniperRiffle extends Weapon {
     @Override
     public String getDescription() {
         return "Долгая перезарядка, высокий урон";
-    }
-
-    @Override
-    public WeaponType getEnum() {
-        return WeaponType.SniperRiffle;
     }
 }

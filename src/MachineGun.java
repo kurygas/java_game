@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.io.IOException;
 
 public class MachineGun extends Weapon {
@@ -16,8 +15,4 @@ public class MachineGun extends Weapon {
         return "Быстрая перезарядка, небольшой урон";
     }
 
-    @Override
-    public WeaponType getEnum() {
-        return WeaponType.MachineGun;
-    }
 }

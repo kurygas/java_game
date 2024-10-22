@@ -2,7 +2,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Ship extends Unit implements HealthPoint {
-    private Weapon weapon;
+    private final Weapon weapon;
     private int currentHp;
     private final int maxHp;
     private final Color color;
@@ -22,10 +22,6 @@ public class Ship extends Unit implements HealthPoint {
         enemies.add(enemy);
     }
 
-    public void setWeapon(Weapon weapon) {
-        this.weapon = weapon;
-    }
-
     public void shoot() {
         int imageSize = this.image.getWidth(null) / 2;
         this.weapon.shoot(this.x + imageSize, this.y + imageSize, this.angle);
@@ -33,8 +29,8 @@ public class Ship extends Unit implements HealthPoint {
 
     @Override
     public void move() {
-        var dx = (int) (Math.sin(this.angle) * this.speed);
-        var dy = (int) (Math.cos(this.angle) * this.speed);
+        var dx = (int) Math.round(Math.sin(this.angle) * this.speed);
+        var dy = (int) Math.round(Math.cos(this.angle) * this.speed);
 
         if (this.direction.up) {
             this.x += dx;
@@ -93,8 +89,8 @@ public class Ship extends Unit implements HealthPoint {
     }
 
     @Override
-    public boolean isAlive() {
-        return this.currentHp > 0;
+    public boolean isDead() {
+        return this.currentHp <= 0;
     }
 
     @Override

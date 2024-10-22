@@ -20,7 +20,7 @@ public abstract class Weapon implements ActionListener {
         this.bulletSpeed = bulletSpeed;
         this.timer = new Timer(cooldown, this);
         this.image = ImageIO.read(new File("src/bullet.png")).getScaledInstance(50, 50,
-                Image.SCALE_DEFAULT);;
+                Image.SCALE_DEFAULT);
     }
 
     public void shoot(int x, int y, double angle) {
@@ -42,6 +42,9 @@ public abstract class Weapon implements ActionListener {
         var newBullets = new LinkedList<Bullet>();
         for (var bullet : this.bullets) {
             bullet.move();
+            if (!bullet.onScreen()) {
+                continue;
+            }
             newBullets.addLast(bullet);
             for (var target : enemies) {
                 if (target.hasCollision(bullet.x, bullet.y)) {
@@ -75,5 +78,4 @@ public abstract class Weapon implements ActionListener {
 
     public abstract String getName();
     public abstract String getDescription();
-    public abstract WeaponType getEnum();
 }

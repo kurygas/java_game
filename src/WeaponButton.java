@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class WeaponButton extends JRadioButton {
     Weapon weapon;
@@ -11,12 +10,10 @@ public class WeaponButton extends JRadioButton {
         setForeground(Color.BLACK);
         setFont(new Font("Arial", Font.PLAIN, 20));
         this.weapon = weapon;
-        if (this.weapon instanceof Automate) {
-            setSelected(true);
-        }
+        setSelected(this.weapon instanceof Automate);
     }
 
-    public Weapon getWeapon() throws IOException {
+    public Weapon getWeapon() {
         return this.weapon;
     }
 }

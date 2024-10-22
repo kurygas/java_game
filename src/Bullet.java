@@ -1,7 +1,6 @@
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
-public class Bullet extends Unit implements Attack {
+public class Bullet extends Unit {
     private final int damage;
 
     public Bullet(int x, int y, int speed, double angle, Image image, int damage) {
@@ -20,7 +19,6 @@ public class Bullet extends Unit implements Attack {
         this.y -= (int) (Math.cos(this.angle) * this.speed);
     }
 
-    @Override
     public void toAttack(HealthPoint enemy) {
         enemy.setHP(enemy.getHP() - this.damage);
     }

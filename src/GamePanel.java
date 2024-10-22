@@ -8,69 +8,62 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class GamePanel extends JPanel implements KeyListener, ActionListener {
-    private final Ship player1;
-    private final Ship player2;
+public class GamePanel extends AbstractPanel implements KeyListener, ActionListener {
+    private Ship player1;
+    private Ship player2;
     private final Image spaceImage;
     private Ship winner;
+    private final JButton menuButton = new JButton("Вернуться в меню");
+    private String winnerLabel = "";
+    private final Timer timer = new Timer(50, this);
+    private final Image shipImage;
+    private final Font labelFont = new Font("Arial", Font.BOLD, 60);
 
     public GamePanel() {
         addKeyListener(this);
-        var timer = new Timer(50, this);
-        timer.start();
+        setLayout(null);
 
         try {
-            var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             this.spaceImage = ImageIO.read(new File("src/space.png")).getScaledInstance(screenSize.width,
-                    screenSize.height, Image.SCALE_DEFAULT);
-            var shipImage = ImageIO.read(new File("src/ship.png")).getScaledInstance(100, 100,
+                    this.screenSize.height, Image.SCALE_DEFAULT);
+            this.shipImage = ImageIO.read(new File("src/ship.png")).getScaledInstance(100, 100,
                     Image.SCALE_DEFAULT);
-            var yPos = screenSize.height / 2 - shipImage.getHeight(null) / 2;
-            this.player1 = new Ship(25, yPos, 10, Math.PI / 2, shipImage, null, 18, Color.BLUE,
-                    "Player 1");
-            this.player2 = new Ship( screenSize.width - 125, yPos, 10, -Math.PI / 2, shipImage, null,
-                    18, Color.RED, "Player 2");
-            this.player1.addEnemy(this.player2);
-            this.player2.addEnemy(this.player1);
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        this.menuButton.setVisible(false);
+        var buttonWidth = 300;
+        var buttonHeight = 100;
+        var buttonX = (this.screenSize.width - buttonWidth) / 2;
+        var buttonY = (int) (this.screenSize.height * 0.6);
+        this.menuButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
+        this.menuButton.setBackground(Color.GREEN);
+        this.menuButton.setFont(new Font("Arial", Font.BOLD, 20));
+        add(this.menuButton);
+
         setFocusable(true);
-    }
-
-    void setPlayer1Weapon(Weapon weapon) {
-        this.player1.setWeapon(weapon);
-    }
-
-    void setPlayer2Weapon(Weapon weapon) throws IOException {
-        this.player2.setWeapon(weapon);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(this.spaceImage, 0, 0, null);
+        g.setFont(this.labelFont);
+        g.setColor(Color.WHITE);
+        var labelWidth = 35 * this.winnerLabel.length();
+        var labelX = (this.screenSize.width - labelWidth) / 2;
+        var labelY = (int) (this.screenSize.height * 0.4);
+        g.drawString(this.winnerLabel, labelX, labelY);
 
-        if (this.winner != null) {
-            g.setFont(new Font("Arial", Font.BOLD, 60));
-            g.setColor(Color.WHITE);
-            var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            var label = this.winner.getName().concat(" wins!");
-            g.drawString(label, screenSize.width / 2 - label.length() * 15,
-                    screenSize.height / 2 - 30);
-        }
-        else {
+        if (this.winner == null) {
             this.player1.draw(g);
             this.player2.draw(g);
         }
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -109,15 +102,41 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             this.player1.move();
             this.player2.move();
 
-            if (this.player1.getHP() <= 0) {
-                this.winner = this.player2;
-            }
+            if (this.winner == null && (this.player1.isDead() || this.player2.isDead())) {
+                this.menuButton.setVisible(true);
 
-            if (this.player2.getHP() <= 0) {
-                this.winner = this.player1;
+                if (this.player1.isDead()) {
+                    this.winner = this.player2;
+                    this.winnerLabel = "Игрок 2 победил!";
+                } else {
+                    this.winner = this.player1;
+                    this.winnerLabel = "Игрок 1 победил!";
+                }
             }
         }
 
         repaint();
+    }
+
+    public JButton getMenuButton() {
+        return this.menuButton;
+    }
+
+    public void endGame() {
+        this.timer.stop();
+        this.winner = null;
+    }
+
+    public void startGame(Weapon player1Weapon, Weapon player2Weapon) {
+        var yPos = screenSize.height / 2 - shipImage.getHeight(null) / 2;
+        this.player1 = new Ship(25, yPos, 10, Math.PI / 2, shipImage, player1Weapon, 18, Color.BLUE,
+                "Player 1");
+        this.player2 = new Ship(screenSize.width - 125, yPos, 10, -Math.PI / 2, shipImage,
+                player2Weapon, 18, Color.RED, "Player 2");
+        this.player1.addEnemy(this.player2);
+        this.player2.addEnemy(this.player1);
+        this.timer.start();
+        this.menuButton.setVisible(false);
+        this.winnerLabel = "";
     }
 }

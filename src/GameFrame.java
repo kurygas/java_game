@@ -24,29 +24,24 @@ public class GameFrame extends JFrame {
         add(this.cardPanel);
 
         this.menu.getStartButton().addActionListener(_ -> {
+            this.cardLayout.show(this.cardPanel, "GamePanel");
+
             try {
-                this.game.setPlayer1Weapon(this.menu.getPlayer1Weapon());
+                this.game.startGame(this.menu.getPlayer1Weapon(), this.menu.getPlayer2Weapon());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
-            try {
-                this.game.setPlayer2Weapon(this.menu.getPlayer2Weapon());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            this.game.requestFocusInWindow();
+        });
 
-            cardLayout.show(cardPanel, "GamePanel");
-            game.requestFocusInWindow();
+        this.game.getMenuButton().addActionListener(_ -> {
+            this.game.endGame();
+            this.cardLayout.show(this.cardPanel, "MenuPanel");
+            this.game.endGame();
+            this.menu.requestFocusInWindow();
         });
 
         setVisible(true);
-    }
-
-    public void SwitchToMenu() throws IOException {
-        System.out.println("Переключение на меню");
-        // game.Restart();
-        cardLayout.show(cardPanel, "MenuPanel");
-        menu.requestFocusInWindow();
     }
 }
